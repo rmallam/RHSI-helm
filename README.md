@@ -58,7 +58,7 @@ if you already have RHSI installed using anyother method and want to migrate to 
 | Name                 | Description                                                                                                    | Value           |
 | ------               | -------------------------------------------------------------------------------------------------------------- | --------------- |
 | `serviceController.enabled`    | Enable service controller                                                        | `"true/false"`            |
-| `serviceController.serviceSync`   | Enable service sync from other cluster                                        | `"true/false"`            |
+| `serviceController.disableServiceSync`   | disbale service sync from other cluster - default false                                   | `"true/false"`            |
 | `serviceController.cpu.requests`  | Enable service controller cpu requests                                            | `"50m"`            |
 | `serviceController.cpu.limits`    | Enable service controller cpu limits                                                           | `"50m"`            |
 | `serviceController.memory.requests`  | Enable service controller memory requests                                                        | `"256Mi"`            |
