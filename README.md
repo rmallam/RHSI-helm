@@ -92,8 +92,6 @@ View services exposed
 
 Skupper cli can be downloaded here https://skupper.io/releases/index.html
 
-https://confluence.service.anz/display/CAP/Health+Check+Guide
-
 run skupper debug events and check the service sync event if it was established. the event will look like below.  If the certs are not correct, you will see an error here about certificates.
 
 
