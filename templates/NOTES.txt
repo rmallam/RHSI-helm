@@ -11,9 +11,9 @@ Run the following to see the resource
 
  oc get cm skupper-site -o yaml 
 
-you will now have to run the following to deploy the other components of RHSI.
+you will now have to run the following from the RHSI-helm folder to deploy the other components of RHSI.
 
-helm upgrade --install ./ --set siteconfigonly=false 
+helm upgrade --install skupper ./ --set siteconfigonly=false 
 
 {{- end -}}
 
@@ -43,11 +43,11 @@ View services exposed
 
     * skupper service status
 
-Skupper cli can be downloaded here chttps://skupper.io/releases/index.html
+Skupper cli can be downloaded here https://skupper.io/releases/index.html
 
-{{- end -}}
+{{- end }}
 
-{{- if and .Values.linkTokenCreate .Values.selfSignedCerts -}}
+{{ if and .Values.linkTokenCreate .Values.selfSignedCerts not .Values.siteconfigonly -}}
 
         **** Link information ****
 

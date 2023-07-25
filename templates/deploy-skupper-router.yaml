@@ -95,6 +95,13 @@ spec:
           requests:
             cpu: "{{ .Values.router.cpu.requests }}"
             memory: "{{ .Values.router.memory.requests }}"
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -116,6 +123,13 @@ spec:
           requests:
             cpu: "{{ .Values.configSync.cpu.requests }}"
             memory: "{{ .Values.configSync.memory.requests }}"
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:

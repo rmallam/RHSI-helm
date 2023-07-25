@@ -83,6 +83,12 @@ spec:
             memory: "{{ .Values.serviceController.memory.requests }}"
         securityContext:
           runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+          runAsNonRoot: true
         startupProbe:
           failureThreshold: 60
           httpGet:
@@ -131,6 +137,11 @@ spec:
               memory: "{{ .Values.flowCollector.memory.requests }}"
         securityContext:
           runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:

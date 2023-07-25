@@ -9,10 +9,10 @@ siteconfigonly: false
 router:
   name: skupper-router
   image:
-    repository: quay.io/skupper/skupper-router-rhel9
+    repository: quay.io/skupper/skupper-router
     pullPolicy: IfNotPresent
-    version: 2.4.1-4
-  ingressHost: "apps-int.di1001.cpaas.test"
+    version: 2.4.2
+  ingressHost: "violet-cluster-new-2761a99850dd8c23002378ac6ce7f9ad-0000.au-syd.containers.appdomain.cloud"
   ingressType: "route"
   mode: "interior"
   replicas: 2
@@ -32,8 +32,8 @@ console:
 
 configSync:
   image:
-    repository: "quay.io/skupper/skupper-config-sync-rhel9"
-    version: "1.4.1-1"
+    repository: "quay.io/skupper/config-sync"
+    version: "1.4.2"
     pullPolicy: IfNotPresent
   cpu:
     requests: 100m
@@ -46,9 +46,9 @@ serviceController:
   enabled: true
   disableServiceSync: false
   image:
-    repository: "quay.io/skupper/skupper-service-controller-rhel9"
+    repository: "quay.io/skupper/service-controller"
     pullPolicy: IfNotPresent
-    version: "1.4.1-2"
+    version: "1.4.2"
   cpu:
     requests: 100m
     limits: 100m
@@ -59,8 +59,8 @@ serviceController:
 flowCollector: #this will help in generating metrics 
   enabled: true
   image:
-    repository: "quay.io/skupper/skupper-flow-collector-rhel9"
-    tag: "1.4.1-1"
+    repository: "quay.io/skupper/flow-collector"
+    tag: "1.4.2"
   cpu:
     requests: 50m
     limits: 100m
@@ -77,7 +77,7 @@ flowCollector: #this will help in generating metrics
 #     - name: ddtb-omnichannel-dev1-high-di1001
 #       host: skupper-inter-router-ddtb-omnichannel-dev1-high-di1001.apps-int.di1001.cpaas.test
 
-selfSignedCerts: false
+selfSignedCerts: true
 
 linkTokenCreate: false
 
