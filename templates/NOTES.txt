@@ -1,0 +1,65 @@
+
+******************************************************************
+***               RED HAT Service Interconnect                 ***
+******************************************************************
+
+{{- if .Values.siteconfigonly }}
+
+you have deployed only skupper-site configmap.
+
+Run the following to see the resource
+
+ oc get cm skupper-site -o yaml 
+
+you will now have to run the following to deploy the other components of RHSI.
+
+helm upgrade --install ./ --set siteconfigonly=false 
+
+{{- end -}}
+
+{{- if not .Values.siteconfigonly }}
+
+Red Hat Service Interconnect has been deployed successfully in your namespace.
+
+- {{ .Values.router.replicas }} of skupper-routers  
+- 1 replica of skupper-service-controller 
+- 1 replica of skupper-prometheus pod
+
+Run the following commands to get more information on installation
+
+Status of installation.
+
+    *   skupper status 
+
+View skupper events
+ 
+    *   skupper debug events
+
+View link status 
+
+    * skupper link status
+
+View services exposed
+
+    * skupper service status
+
+Skupper cli can be downloaded here chttps://skupper.io/releases/index.html
+
+{{- end -}}
+
+{{- if and .Values.linkTokenCreate .Values.selfSignedCerts -}}
+
+        **** Link information ****
+
+Link token has been created as a secret called skupper-link-token, You will now need to extract the secret and deploy it on the other cluster to establish the link between the clusters.
+
+    * Extracting the secret
+
+    oc get secret skupper-link-token -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > connectiontoken.yaml
+
+    * Applying it on the other clusters
+
+     oc apply -f connectiontoken.yaml
+
+{{- end -}}
+

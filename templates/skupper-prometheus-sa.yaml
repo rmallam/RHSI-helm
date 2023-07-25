@@ -1,0 +1,7 @@
+{{ if not .Values.siteconfigonly }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: skupper-prometheus
+
+{{- end }}

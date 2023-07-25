@@ -1,0 +1,17 @@
+{{ if not .Values.siteconfigonly }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: claims
+spec:
+  port:
+    targetPort: claims
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: passthrough
+  to:
+    kind: Service
+    name: skupper
+    weight: 100
+  wildcardPolicy: None
+{{- end }}

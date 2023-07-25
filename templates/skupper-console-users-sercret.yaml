@@ -1,0 +1,9 @@
+{{ if not .Values.siteconfigonly }}
+apiVersion: v1
+data:
+  admin: YURtSU5AMQo=
+kind: Secret
+metadata:
+  name: skupper-console-users
+type: Opaque
+{{- end }}

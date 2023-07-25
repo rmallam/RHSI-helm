@@ -1,0 +1,26 @@
+{{ if not .Values.siteconfigonly }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: skupper
+spec:
+  ports:
+  - name: rest-api
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: metrics
+    port: 8010
+    protocol: TCP
+    targetPort: 8010
+  - name: claims
+    port: 8081
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app.kubernetes.io/name: skupper-service-controller
+    app.kubernetes.io/part-of: skupper
+    skupper.io/component: service-controller
+  sessionAffinity: None
+  type: ClusterIP
+{{- end }}

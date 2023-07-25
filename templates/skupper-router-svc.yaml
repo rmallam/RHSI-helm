@@ -1,0 +1,23 @@
+{{ if not .Values.siteconfigonly }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: skupper-router
+spec:
+  ports:
+    - name: inter-router
+      protocol: TCP
+      port: 55671
+      targetPort: 55671
+    - name: edge
+      protocol: TCP
+      port: 45671
+      targetPort: 45671
+  selector:
+    app.kubernetes.io/name: skupper-router
+    app.kubernetes.io/part-of: skupper
+    application: skupper-router
+    skupper.io/component: router
+  type: ClusterIP
+
+{{- end }}

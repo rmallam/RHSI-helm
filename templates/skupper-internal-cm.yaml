@@ -1,0 +1,141 @@
+{{ if not .Values.siteconfigonly }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skupper-internal
+data:
+  skrouterd.json: |-
+    [
+        [
+            "router",
+            {
+                "id": "skupper-${HOSTNAME}",
+                "mode": "interior",
+                "helloMaxAgeSeconds": "3",
+                "metadata": "{\"version\":\"{{ .Values.serviceController.image.tag }}\",\"platform\":\"kubernetes\"}"
+            }
+        ],
+        [
+            "sslProfile",
+            {
+                "name": "skupper-service-client",
+                "caCertFile": "/etc/skupper-router-certs/skupper-service-client/ca.crt"
+            }
+        ],
+        [
+            "sslProfile",
+            {
+                "name": "skupper-internal",
+                "certFile": "/etc/skupper-router-certs/skupper-internal/tls.crt",
+                "privateKeyFile": "/etc/skupper-router-certs/skupper-internal/tls.key",
+                "caCertFile": "/etc/skupper-router-certs/skupper-internal/ca.crt"
+            }
+        ],
+        [
+            "sslProfile",
+            {
+                "name": "skupper-amqps",
+                "certFile": "/etc/skupper-router-certs/skupper-amqps/tls.crt",
+                "privateKeyFile": "/etc/skupper-router-certs/skupper-amqps/tls.key",
+                "caCertFile": "/etc/skupper-router-certs/skupper-amqps/ca.crt"
+            }
+        ],
+
+        {{- range .Values.remoteSites -}}
+        {{- $remotesitename := printf "%s" .name }}
+        {{- $remotesitehost := printf "%s" .host }}
+                [
+            "connector",
+            {
+                "name": "{{ $remotesitename }}",
+                "role": "inter-router",
+                "host": "{{ $remotesitehost }}",
+                "port": "443",
+                "sslProfile": "{{ $remotesitename }}-profile",
+                "maxFrameSize": 16384,
+                "maxSessionFrames": 640
+            }
+        ],
+        [
+            "sslProfile",
+            {
+                "name": "{{ $remotesitename }}-profile",
+                "certFile": "/etc/skupper-router-certs/{{ $remotesitename }}-profile/tls.crt",
+                "privateKeyFile": "/etc/skupper-router-certs/{{ $remotesitename }}-profile/tls.key",
+                "caCertFile": "/etc/skupper-router-certs/{{ $remotesitename }}-profile/ca.crt"
+            }
+        ],
+        {{- end -}}
+
+        [
+            "listener",
+            {
+                "name": "@9090",
+                "role": "normal",
+                "port": 9090,
+                "http": true,
+                "httpRootDir": "disabled",
+                "healthz": true,
+                "metrics": true
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "amqp",
+                "host": "localhost",
+                "port": 5672
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "amqps",
+                "port": 5671,
+                "sslProfile": "skupper-amqps",
+                "saslMechanisms": "EXTERNAL",
+                "authenticatePeer": true
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "interior-listener",
+                "role": "inter-router",
+                "port": 55671,
+                "sslProfile": "skupper-internal",
+                "saslMechanisms": "EXTERNAL",
+                "authenticatePeer": true,
+                "maxFrameSize": 16384,
+                "maxSessionFrames": 640
+            }
+        ],
+        [
+            "listener",
+            {
+                "name": "edge-listener",
+                "role": "edge",
+                "port": 45671,
+                "sslProfile": "skupper-internal",
+                "saslMechanisms": "EXTERNAL",
+                "authenticatePeer": true,
+                "maxFrameSize": 16384,
+                "maxSessionFrames": 640
+            }
+        ],
+        [
+            "address",
+            {
+                "prefix": "mc",
+                "distribution": "multicast"
+            }
+        ],
+        [
+            "log",
+            {
+                "module": "ROUTER_CORE",
+                "enable": "error+"
+            }
+        ]
+    ]
+{{- end }}

@@ -1,0 +1,11 @@
+{
+    "scheme": "amqps",
+    "host": "skupper-router-local.{{ .Release.Namespace }}.svc.cluster.local",
+    "port": "5671",
+    "tls": {
+        "ca": "/etc/messaging/ca.crt",
+        "cert": "/etc/messaging/tls.crt",
+        "key": "/etc/messaging/tls.key",
+        "verify": true
+    }
+}
