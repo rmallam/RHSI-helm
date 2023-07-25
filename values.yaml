@@ -9,7 +9,7 @@ siteconfigonly: false
 router:
   name: skupper-router
   image:
-    repository: ics-ccp-cpaas-docker-registry.artifactory.gcp.anz/skupper/ga/skupper-router-rhel9
+    repository: quay.io/skupper/skupper-router-rhel9
     pullPolicy: IfNotPresent
     version: 2.4.1-4
   ingressHost: "apps-int.di1001.cpaas.test"
@@ -32,7 +32,7 @@ console:
 
 configSync:
   image:
-    repository: "ics-ccp-cpaas-docker-registry.artifactory.gcp.anz/skupper/ga/skupper-config-sync-rhel9"
+    repository: "quay.io/skupper/skupper-config-sync-rhel9"
     version: "1.4.1-1"
     pullPolicy: IfNotPresent
   cpu:
@@ -46,7 +46,7 @@ serviceController:
   enabled: true
   disableServiceSync: false
   image:
-    repository: "ics-ccp-cpaas-docker-registry.artifactory.gcp.anz/skupper/ga/skupper-service-controller-rhel9"
+    repository: "quay.io/skupper/skupper-service-controller-rhel9"
     pullPolicy: IfNotPresent
     version: "1.4.1-2"
   cpu:
@@ -59,7 +59,7 @@ serviceController:
 flowCollector: #this will help in generating metrics 
   enabled: true
   image:
-    repository: "ics-ccp-cpaas-docker-registry.artifactory.gcp.anz/skupper/ga/skupper-flow-collector-rhel9"
+    repository: "quay.io/skupper/skupper-flow-collector-rhel9"
     tag: "1.4.1-1"
   cpu:
     requests: 50m
