@@ -1,4 +1,4 @@
-{{ if not .Values.siteconfigonly }}
+{{ if not .Values.common.siteconfigonly }}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -6,8 +6,8 @@ metadata:
 {{- include "router.labels" . |  nindent 4 }}
   name: skupper-inter-router
 spec:
-{{- if .Values.customhostname }}
-  host: {{ .Values.ingress.host }}.{{ .Values.ingress.domain }}
+{{- if .Values.common.customhostname }}
+  host: {{ .Values.common.ingress.host }}.{{ .Values.common.ingress.domain }}
 {{- end }}
   port:
     targetPort: inter-router

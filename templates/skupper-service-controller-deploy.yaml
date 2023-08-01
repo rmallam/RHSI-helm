@@ -1,4 +1,4 @@
-{{ if not .Values.siteconfigonly }}
+{{ if not .Values.common.siteconfigonly }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,6 +41,12 @@ spec:
           value: "{{ .Values.serviceController.disableServiceSync }}"
         - name: QDROUTERD_IMAGE
           value: {{ .Values.router.image.repository }}:{{ .Values.router.image.version }}
+{{- if and .Values.console.enabled (eq (.Values.console.auth) "internal") }}
+        - name: FLOW_USERS
+          value: /etc/console-users
+        - name: METRICS_USERS
+          value: /etc/console-users
+{{- end }}
         image: {{ .Values.serviceController.image.repository }}:{{ .Values.serviceController.image.version }}
         imagePullPolicy: Always
         livenessProbe:
@@ -83,12 +89,6 @@ spec:
             memory: "{{ .Values.serviceController.memory.requests }}"
         securityContext:
           runAsNonRoot: true
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
-          seccompProfile:
-            type: RuntimeDefault
-          runAsNonRoot: true
         startupProbe:
           failureThreshold: 60
           httpGet:
@@ -104,14 +104,17 @@ spec:
         volumeMounts:
         - mountPath: /etc/service-controller/certs/
           name: skupper-claims-server
-{{ if .Values.console.enabled }}
+{{- if .Values.console.enabled }}
         - mountPath: /etc/service-controller/console/
           name: skupper-console-certs
 {{- end }}
+{{- if and .Values.console.enabled (eq (.Values.console.auth) "internal") }}
+        - name: skupper-console-users
+          mountPath: /etc/console-users/
+{{- end }}
         - mountPath: /etc/messaging/
           name: skupper-local-client
-          
-{{ if .Values.flowCollector.enabled }}
+{{- if .Values.flowCollector.enabled }}
       - env:
         - name: SKUPPER_NAMESPACE
           value: {{ .Release.Namespace }}
@@ -122,7 +125,11 @@ spec:
         - name: SKUPPER_SERVICE_ACCOUNT
           value: skupper-router
         - name: SKUPPER_ROUTER_MODE
-          value: interior
+          value: {{ .Values.router.mode }}
+{{- if and .Values.console.enabled (eq (.Values.console.auth) "internal") }}
+        - name: FLOW_USERS
+          value: /etc/console-users
+{{- end }}
         - name: OWNER_NAME
           value: skupper-router
         image: {{ .Values.flowCollector.image.repository }}:{{ .Values.flowCollector.image.tag }}
@@ -137,11 +144,6 @@ spec:
               memory: "{{ .Values.flowCollector.memory.requests }}"
         securityContext:
           runAsNonRoot: true
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
-          seccompProfile:
-            type: RuntimeDefault
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
@@ -161,6 +163,10 @@ spec:
         - name: skupper-local-client
           mountPath: /etc/messaging/ca.crt
           subPath: ca.crt
+{{- if and .Values.console.enabled (eq (.Values.console.auth) "internal") }}
+        - name: skupper-console-users
+          mountPath: /etc/console-users/
+{{- end }}
 {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -180,6 +186,11 @@ spec:
         secret:
           defaultMode: 420
           secretName: skupper-local-client
+{{- end }}
+{{- if and .Values.console.enabled (eq (.Values.console.auth) "internal") }}
+      - name: skupper-console-users
+        secret:
+          secretName: skupper-console-users
 {{- end }}
       - name: skupper-local-client
         secret:

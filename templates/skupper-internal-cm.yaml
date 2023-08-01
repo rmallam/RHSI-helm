@@ -1,4 +1,4 @@
-{{ if not .Values.siteconfigonly }}
+{{ if not .Values.common.siteconfigonly }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,7 +10,7 @@ data:
             "router",
             {
                 "id": "skupper-${HOSTNAME}",
-                "mode": "interior",
+                "mode": "{{ .Values.router.mode }}",
                 "helloMaxAgeSeconds": "3",
                 "metadata": "{\"version\":\"{{ .Values.serviceController.image.tag }}\",\"platform\":\"kubernetes\"}"
             }
@@ -40,33 +40,6 @@ data:
                 "caCertFile": "/etc/skupper-router-certs/skupper-amqps/ca.crt"
             }
         ],
-
-        {{- range .Values.remoteSites -}}
-        {{- $remotesitename := printf "%s" .name }}
-        {{- $remotesitehost := printf "%s" .host }}
-                [
-            "connector",
-            {
-                "name": "{{ $remotesitename }}",
-                "role": "inter-router",
-                "host": "{{ $remotesitehost }}",
-                "port": "443",
-                "sslProfile": "{{ $remotesitename }}-profile",
-                "maxFrameSize": 16384,
-                "maxSessionFrames": 640
-            }
-        ],
-        [
-            "sslProfile",
-            {
-                "name": "{{ $remotesitename }}-profile",
-                "certFile": "/etc/skupper-router-certs/{{ $remotesitename }}-profile/tls.crt",
-                "privateKeyFile": "/etc/skupper-router-certs/{{ $remotesitename }}-profile/tls.key",
-                "caCertFile": "/etc/skupper-router-certs/{{ $remotesitename }}-profile/ca.crt"
-            }
-        ],
-        {{- end -}}
-
         [
             "listener",
             {

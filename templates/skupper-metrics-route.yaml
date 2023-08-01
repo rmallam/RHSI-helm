@@ -1,4 +1,4 @@
-{{ if not .Values.siteconfigonly }}
+{{ if not .Values.common.siteconfigonly }}
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:

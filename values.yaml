@@ -1,10 +1,17 @@
-# Default values for skupper-site-controller.
-# This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 # image versions are based on the releases from skupper.io, Every release of skupper will have four containers(at the time of document 20/10). Check the mainfest for each release and push them to DTR.
+common:
+  siteconfigonly: false
+  customhostname: false
+  ingressType: "route"
+  ingress:
+    host: "skupper-inter-router"
+    domain: "redhat.com" # Domain of the cluster, like "apps-int.di1001.cpaas.test".  if using a custom domain, set to the appropriate one.
 
-siteconfigonly: false
+console:
+  enabled: true
+  auth: unsecured # internal / openshift
 
 router:
   name: skupper-router
@@ -12,23 +19,18 @@ router:
     repository: quay.io/skupper/skupper-router
     pullPolicy: IfNotPresent
     version: 2.4.2
-  ingressHost: "violet-cluster-new-2761a99850dd8c23002378ac6ce7f9ad-0000.au-syd.containers.appdomain.cloud"
-  ingressType: "route"
-  mode: "interior"
+  mode: "interior" 
   replicas: 2
   cpu:
-    requests: 100m
-    limits: 200m
+    requests: 600m
+    limits: 2
   memory:
-    requests: 256Mi
-    limits: 256Mi
+    requests: 2Gi
+    limits: 4Gi
   annotations:
     prometheus.io/port: "9090"  # required for flow controller to get logs 
     prometheus.io/scrape: "true" # required for flow controller to get logs 
   labels: {}
-
-console:
-  enabled: true
 
 configSync:
   image:
@@ -62,24 +64,33 @@ flowCollector: #this will help in generating metrics
     repository: "quay.io/skupper/flow-collector"
     tag: "1.4.2"
   cpu:
-    requests: 50m
-    limits: 100m
+    requests: 300m
+    limits: 1
+  memory:
+    requests: 1Gi
+    limits: 1Gi 
+prometheus: #this will help in generating metrics 
+  image:
+    repository: "quay.io/prometheus/prometheus"
+    version: "v2.42.0"
+  cpu:
+    requests: 200m
+    limits: 200m
   memory:
     requests: 256Mi
     limits: 256Mi
 
-# remoteSites  # overridden by namespace specific values file
-# if you need to link this site to any other skupper site, add the details below. Name of the other skupper site which will usually be the namespace of the other site where skupper is installed and the inter-router route URL from the other namespace.
-# remoteSites:
-#     - name: ddtb-omnichannel-dev1-high-di1001
-#       host: skupper-inter-router-ddtb-omnichannel-dev1-high-di1001.apps-int.di1001.cpaas.test
-#     example
-#     - name: ddtb-omnichannel-dev1-high-di1001
-#       host: skupper-inter-router-ddtb-omnichannel-dev1-high-di1001.apps-int.di1001.cpaas.test
 
-selfSignedCerts: true
+remoteSites:
+ - name: udeploy-agents-dev-di1001
+   edgehost:  remoteistedetails
+   interrouterhost:  remoteistedetails
 
+selfSignedCerts: false
+
+# Only set to true if selfSignedCerts is false
 linkTokenCreate: false
+
 
 secrets:
   - skupper-claims-server
