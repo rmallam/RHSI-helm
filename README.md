@@ -224,10 +224,10 @@ View skupper events
 ServiceSyncEvent             4                                                                                     2m25s
                              1     Service interface(s) modified web                                               2m25s
                              1     Service sync sender connection to                                               2m28s
-                                   amqps://skupper-router-local.mas-dev-di1001.svc.cluster.local:5671
+                                   amqps://skupper-router-local.ns1.svc.cluster.local:5671
                                    established
                              1     Service sync receiver connection to                                             2m28s
-                                   amqps://skupper-router-local.mas-dev-di1001.svc.cluster.local:5671
+                                   amqps://skupper-router-local.ns1.svc.cluster.local:5671
                                    established
                              1     Service interface(s) added backend,web   
                              
