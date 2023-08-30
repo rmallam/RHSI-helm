@@ -23,8 +23,9 @@ Red Hat Service Interconnect has been deployed successfully in your namespace.
 
 - {{ .Values.router.replicas }} of skupper-routers  
 - 1 replica of skupper-service-controller 
+{{ if .Values.flowCollector.enabled }}
 - 1 replica of skupper-prometheus pod
-
+{{- end }}
 Run the following commands to get more information on installation
 
 Status of installation.
