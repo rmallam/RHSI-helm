@@ -1,4 +1,5 @@
 {{ if not .Values.common.siteconfigonly }}
+{{ if .Values.flowCollector.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -10,4 +11,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: skupper-prometheus
+{{- end }}
 {{- end }}

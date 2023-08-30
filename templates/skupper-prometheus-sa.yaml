@@ -1,7 +1,9 @@
 {{ if not .Values.common.siteconfigonly }}
+{{ if .Values.flowCollector.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: skupper-prometheus
 
+{{- end }}
 {{- end }}
