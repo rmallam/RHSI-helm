@@ -10,7 +10,7 @@ data:
   console-authentication: "{{ .Values.console.auth }}"
 {{- if .Values.common.customhostname }}
   ingress-host: "{{ .Values.common.ingress.domain }}"
-{{- end -}}
+{{- end }}
   ingress: "{{ .Values.common.ingressType }}"
   routers: "{{ .Values.router.replicas }}"
   router-mode: "{{ .Values.router.mode }}"
