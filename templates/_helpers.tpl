@@ -31,7 +31,7 @@ admin: "YWRtaW4K"
 {{- end -}}
 
 {{/*
-skupper token labels and annotations
+skupper token labels and annotations for the link secret
 */}}
 {{- define "token.metadata" -}}
 labels:
