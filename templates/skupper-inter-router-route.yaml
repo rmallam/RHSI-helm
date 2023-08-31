@@ -6,9 +6,7 @@ metadata:
 {{- include "router.labels" . |  nindent 4 }}
   name: skupper-inter-router
 spec:
-{{- if .Values.common.customhostname }}
-  host: {{ .Values.common.ingress.host }}.{{ .Values.common.ingress.domain }}
-{{- end }}
+  host: skupper-inter-router-{{ .Release.Namespace }}.{{ .Values.common.ingress.domain }}
   port:
     targetPort: inter-router
   tls:

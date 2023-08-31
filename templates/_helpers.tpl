@@ -5,7 +5,7 @@ tls.crt:  {{ index $secret.data "tls.crt" }}
 ca.crt:  {{ index $secret.data "ca.crt" }}
 tls.key:  {{ index $secret.data "tls.key" }}
 {{- else }}
-{{- $altNames := list ( printf "%s-%s.%s" .Values.common.ingress.host .Values.common.ingress.domain ) ( printf "%s.%s.svc.cluster.local" "skupper-router-local" .Release.Namespace ) -}}
+{{- $altNames := list ( printf "%s-%s.%s" "skupper-inter-router" .Release.Namespace .Values.common.ingress.domain ) ( printf "%s.%s.svc.cluster.local" "skupper-router-local" .Release.Namespace ) -}}
 {{- $ca := genCA "skupper-ca" 365 -}}
 {{- $cert := genSignedCert .Release.Name nil $altNames 365 $ca -}}
 tls.crt: {{ $cert.Cert | b64enc }}
