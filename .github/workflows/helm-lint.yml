@@ -26,13 +26,7 @@ jobs:
           check-latest: true
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.4.0
-
-      - name: Run chart-testing (list-changed)
-        id: run-lint
-        run: | 
-               ls -lrt
-               ct lint  --chart-dirs ./
+        uses: helm/chart-testing-action@v2.5.0
 
       - name: Run chart-testing (list-changed)
         id: list-changed 
