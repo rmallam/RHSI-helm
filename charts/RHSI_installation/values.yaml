@@ -3,11 +3,9 @@
 # image versions are based on the releases from skupper.io, Every release of skupper will have four containers(at the time of document 20/10). Check the mainfest for each release and push them to DTR.
 common:
   siteconfigonly: false
-  customhostname: false
   ingressType: "route"
   ingress:
-    host: "skupper-inter-router"
-    domain: "redhat.com" # Domain of the cluster, like "apps-int.di1001.cpaas.test".  if using a custom domain, set to the appropriate one.
+    domain: "apps.example.com" # Domain of the cluster, like "apps-int.di1001.cpaas.test".
 
 console:
   enabled: true
@@ -20,9 +18,9 @@ router:
     pullPolicy: IfNotPresent
     version: 2.4.2
   mode: "interior" 
-  replicas: 2
+  replicas: 1 
   cpu:
-    requests: 600m
+    requests: 100m
     limits: 2
   memory:
     requests: 2Gi
@@ -38,10 +36,10 @@ configSync:
     version: "1.4.2"
     pullPolicy: IfNotPresent
   cpu:
-    requests: 100m
+    requests: 50m
     limits: 100m
   memory:
-    requests: 256Mi
+    requests: 128Mi
     limits: 256Mi
 
 serviceController:
@@ -59,16 +57,16 @@ serviceController:
     limits: 256Mi
 
 flowCollector: #this will help in generating metrics 
-  enabled: true
-  image:
-    repository: "quay.io/skupper/flow-collector"
-    tag: "1.4.2"
-  cpu:
-    requests: 300m
-    limits: 1
-  memory:
-    requests: 1Gi
-    limits: 1Gi 
+  enabled: false
+  #image:
+  #  repository: "quay.io/skupper/flow-collector"
+  #  tag: "1.4.2"
+  #cpu:
+  #  requests: 300m
+  #  limits: 1
+  #memory:
+  #  requests: 1Gi
+  #  limits: 1Gi 
 prometheus: #this will help in generating metrics 
   image:
     repository: "quay.io/prometheus/prometheus"
@@ -86,10 +84,9 @@ remoteSites:
    edgehost:  remoteistedetails
    interrouterhost:  remoteistedetails
 
-selfSignedCerts: false
+selfSignedCerts: true
 
-# Only set to true if selfSignedCerts is false
-linkTokenCreate: false
+linkTokenCreate: true 
 
 
 secrets:

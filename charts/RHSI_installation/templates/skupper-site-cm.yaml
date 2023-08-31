@@ -8,9 +8,7 @@ data:
   console: "{{ .Values.console.enabled }}"
   flow-collector: "{{ .Values.flowCollector.enabled }}"
   console-authentication: "{{ .Values.console.auth }}"
-{{- if .Values.common.customhostname }}
   ingress-host: "{{ .Values.common.ingress.domain }}"
-{{- end }}
   ingress: "{{ .Values.common.ingressType }}"
   routers: "{{ .Values.router.replicas }}"
   router-mode: "{{ .Values.router.mode }}"
