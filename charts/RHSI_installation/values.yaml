@@ -67,7 +67,7 @@ flowCollector:  #  this will help in generating metrics
   # memory:
   #   requests: 1Gi
   #   limits: 1Gi
-prometheus:  #  this will help in generating metrics 
+prometheus:  #  this will help in generating metrics
   image:
     repository: "quay.io/prometheus/prometheus"
     version: "v2.42.0"
@@ -80,13 +80,13 @@ prometheus:  #  this will help in generating metrics
 
 
 remoteSites:
- - name: udeploy-agents-dev-di1001
-   edgehost:  remoteistedetails
-   interrouterhost:  remoteistedetails
+   - name: udeploy-agents-dev-di1001
+     edgehost: remoteistedetails
+     interrouterhost: remoteistedetails
 
 selfSignedCerts: true
 
-linkTokenCreate: true 
+linkTokenCreate: true
 
 
 secrets:
