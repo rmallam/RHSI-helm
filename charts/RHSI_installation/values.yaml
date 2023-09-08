@@ -5,11 +5,11 @@ common:
   siteconfigonly: false
   ingressType: "route"
   ingress:
-    domain: "apps.example.com" # Domain of the cluster, like "apps-int.di1001.cpaas.test".
+    domain: "apps.example.com" #  Domain of the cluster, like "apps-int.di1001.cpaas.test".
 
 console:
   enabled: true
-  auth: unsecured # internal / openshift
+  auth: unsecured #  internal / openshift
 
 router:
   name: skupper-router
@@ -17,7 +17,7 @@ router:
     repository: quay.io/skupper/skupper-router
     pullPolicy: IfNotPresent
     version: 2.4.2
-  mode: "interior" 
+  mode: "interior"
   replicas: 1 
   cpu:
     requests: 100m
@@ -26,8 +26,8 @@ router:
     requests: 2Gi
     limits: 4Gi
   annotations:
-    prometheus.io/port: "9090"  # required for flow controller to get logs 
-    prometheus.io/scrape: "true" # required for flow controller to get logs 
+    prometheus.io/port: "9090"  #  required for flow controller to get logs
+    prometheus.io/scrape: "true" #  required for flow controller to get logs
   labels: {}
 
 configSync:
@@ -56,7 +56,7 @@ serviceController:
     requests: 256Mi
     limits: 256Mi
 
-flowCollector: #this will help in generating metrics 
+flowCollector: #  this will help in generating metrics
   enabled: false
   #image:
   #  repository: "quay.io/skupper/flow-collector"
