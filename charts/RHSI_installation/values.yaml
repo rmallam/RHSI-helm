@@ -5,11 +5,11 @@ common:
   siteconfigonly: false
   ingressType: "route"
   ingress:
-    domain: "apps.example.com" #  Domain of the cluster, like "apps-int.di1001.cpaas.test".
+    domain: "apps.example.com"  #  Domain of the cluster, like "apps-int.di1001.cpaas.test".
 
 console:
   enabled: true
-  auth: unsecured #  internal / openshift
+  auth: unsecured  #  internal / openshift
 
 router:
   name: skupper-router
@@ -18,7 +18,7 @@ router:
     pullPolicy: IfNotPresent
     version: 2.4.2
   mode: "interior"
-  replicas: 1 
+  replicas: 1
   cpu:
     requests: 100m
     limits: 2
@@ -27,7 +27,7 @@ router:
     limits: 4Gi
   annotations:
     prometheus.io/port: "9090"  #  required for flow controller to get logs
-    prometheus.io/scrape: "true" #  required for flow controller to get logs
+    prometheus.io/scrape: "true"  #  required for flow controller to get logs
   labels: {}
 
 configSync:
@@ -56,18 +56,18 @@ serviceController:
     requests: 256Mi
     limits: 256Mi
 
-flowCollector: #  this will help in generating metrics
+flowCollector:  #  this will help in generating metrics
   enabled: false
-  #image:
-  #  repository: "quay.io/skupper/flow-collector"
-  #  tag: "1.4.2"
-  #cpu:
-  #  requests: 300m
-  #  limits: 1
-  #memory:
-  #  requests: 1Gi
-  #  limits: 1Gi 
-prometheus: #this will help in generating metrics 
+  # image:
+  #   repository: "quay.io/skupper/flow-collector"
+  #   tag: "1.4.2"
+  # cpu:
+  #   requests: 300m
+  #   limits: 1
+  # memory:
+  #   requests: 1Gi
+  #   limits: 1Gi
+prometheus:  #  this will help in generating metrics 
   image:
     repository: "quay.io/prometheus/prometheus"
     version: "v2.42.0"
