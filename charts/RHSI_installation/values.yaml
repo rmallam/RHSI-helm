@@ -80,9 +80,9 @@ prometheus:  #  this will help in generating metrics
 
 
 remoteSites:
-   - name: udeploy-agents-dev-di1001
-     edgehost: remoteistedetails
-     interrouterhost: remoteistedetails
+  - name: udeploy-agents-dev-di1001
+    edgehost: remoteistedetails
+    interrouterhost: remoteistedetails
 
 selfSignedCerts: true
 
