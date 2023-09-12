@@ -78,8 +78,16 @@ jobs:
           sleep 10
           kubectl wait --for=condition=available apiservice --all --timeout 300s
 
-      - name: Install RHSI
+      - name: Install RHSI siteconfigOnly
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
+
+      - name: Install RHSI
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          helm install --create-namespace --namespace skupper \
+               skupper charts/rhsi --set common.siteconfigonly=False --debug
+
+            
