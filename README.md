@@ -33,7 +33,7 @@ These two steps should be repeated in all the namespaces(assuming east and west 
  
 This will install only a configmap called `skupper-site`. This will hold the information about the skupper site like its name and few other details.
 
-``` helm upgrade --install skupper ./ --set siteconfigonly=true``` 
+``` helm upgrade --install skupper ./ --set common.siteconfigonly=true``` 
        
 2. Deploy other components of skupper. 
 

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: skupper
+description: A Helm chart for Red Hat Service interconnect installation
+type: application
+version: 1.0.0
+appVersion: "1.16.0"
+maintainers:
+  - email: rmallam@redhat.com
+    name: rkm
