@@ -77,7 +77,9 @@ jobs:
           # wait for the cluster to become available
           sleep 10
           kubectl wait --for=condition=available apiservice --all --timeout 300s
-          oc new-project skupper
 
-      - name: Run chart-testing (install)
-        run: ct install --target-branch ${{ github.event.repository.default_branch }} --namespace skupper
+      - name: Install RHSI
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          helm install --create-namespace --namespace skupper \
+               skupper charts/rhsi --set common.siteconfigonly=true
