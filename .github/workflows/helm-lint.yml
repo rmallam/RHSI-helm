@@ -78,6 +78,13 @@ jobs:
           sleep 10
           kubectl wait --for=condition=available apiservice --all --timeout 300s
 
+      - name: Install Tekton with the tekton operator
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          kubectl create ns openshift-operators
+          kubectl apply -f https://storage.googleapis.com/tekton-releases/operator/latest/openshift-release.yaml
+          sleep 10
+          
       - name: Install RHSI siteconfigOnly
         if: steps.list-changed.outputs.changed == 'true'
         run: |
