@@ -2,7 +2,7 @@
 
 # image versions are based on the releases from skupper.io, Every release of skupper will have four containers(at the time of document 20/10). Check the mainfest for each release and push them to DTR.
 common:
-  siteconfigonly: false
+  siteconfigonly: true
   ingressType: "route"
   ingress:
     domain: "apps.example.com"  #  Domain of the cluster, like "apps-int.di1001.cpaas.test".
