@@ -8,9 +8,10 @@ tls.key:  {{ index $secret.data "tls.key" }}
 {{- $altNames := list ( printf "%s-%s.%s" "skupper-inter-router" .Release.Namespace .Values.common.ingress.domain ) ( printf "%s.%s.svc.cluster.local" "skupper-router-local" .Release.Namespace ) -}}
 {{- $ca := genCA "skupper-ca" 365 -}}
 {{- $cert := genSignedCert .Release.Name nil $altNames 365 $ca -}}
-tls.crt: {{ $cert.Cert | b64enc }}
-tls.key: {{ $cert.Key | b64enc }}
-ca.crt: {{ $ca.Cert | b64enc }}
+tlscrt: {{ $cert.Cert | b64enc }}
+tlskey: {{ $cert.Key | b64enc }}
+cacrt: {{ $ca.Cert | b64enc }}
+cakey: {{ $ca.Key | b64enc }}
 {{- end -}}
 {{- end -}}
 
