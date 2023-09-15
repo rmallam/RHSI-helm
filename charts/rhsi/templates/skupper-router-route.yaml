@@ -1,4 +1,5 @@
 {{ if not .Values.common.siteconfigonly }}
+---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -9,6 +10,24 @@ spec:
   host: skupper-inter-router-{{ .Release.Namespace }}.{{ .Values.common.ingress.domain }}
   port:
     targetPort: inter-router
+  tls:
+    insecureEdgeTerminationPolicy: None
+    termination: passthrough
+  to:
+    kind: Service
+    name: skupper-router
+    weight: 100
+  wildcardPolicy: None
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: skupper-edge
+{{- include "router.labels" . |  nindent 4 }}
+spec:
+  host: skupper-edge-{{ .Release.Namespace }}.{{ .Values.common.ingress.domain }}
+  port:
+    targetPort: edge
   tls:
     insecureEdgeTerminationPolicy: None
     termination: passthrough
