@@ -97,3 +97,4 @@ secrets:
   - skupper-service-client
   - skupper-site-server
   - skupper-link-token
+  - skupper-site-ca
