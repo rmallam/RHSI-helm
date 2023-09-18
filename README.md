@@ -1,79 +1,75 @@
-# How to use this Helm chart
+# Overview of this RHSI Helm Chart
 
-This chart will provide an ability to deploy Red Hat Service Interconnect (RHSI) in a easy and seamless manner. All the options that are available with Skupper CLI init are available in this helm chart too.
+This chart provides an easy and seamless install of Red Hat Service Interconnect (RHSI) on OpenShift. All the options that are available with `skupper init` Command-Line Interface (CLI) command are available in this helm chart too.
 
-## Step 1: Install the Skupper command-line tool in your environment
+## Install the Skupper CLI in your development environment
 
-The skupper command-line tool is the primary entrypoint for installing and configuring the Skupper infrastructure. You need to install the skupper command only once for each development environment.
+The skupper command-line tool is the primary entrypoint for installing and configuring the Skupper infrastructure. You need to install the skupper command in each environment you'll manage RHSI from, the same as Helm. It doesn't need to be installed on OpenShift nodes.
 
-Use the install script to download and extract the command:
 
-### LINUX OR MAC
+### Linux/Mac Install
+To install the Skupper CLI under you home directory, run: 
+```
 curl https://skupper.io/install.sh | sh
-The script installs the command under your home directory. It prompts you to add the command to your path if necessary.
+``` 
+It prompts you to add the command to your path if necessary.
 
-For Windows and other installation options, see https://skupper.io/install/index.html.
+### Windows/Manual Install
+See https://skupper.io/install/index.html.
 
 
-## Step 2: Install the Skupper in each namespace
+## Deploy Skupper in each OpenShift namespace
 
-Red Hat Service Interconnect is designed for use with multiple namespaces, typically on different clusters. The skupper command uses your kubeconfig and current context to select the namespace where it operates.
+Red Hat Service Interconnect is designed for use with multiple namespaces- called sites- typically on different clusters. The skupper CLI uses your kubeconfig and current context to select the namespace where it operates. For more information on kubeconfig files, see [here](https://www.redhat.com/sysadmin/kubeconfig).
 
-each namespace where skupper is installed is referred to as a site.
+This guide assumes you have two sites, which are both OpenShift namespaces, called "east" and "west". The sites can be on different, or the same, OpenShift cluster. **Installation for the first time is a two step process.**
+### Prerequisites
+Before you deploy RHSI, you need to:
+* Have project administrator access to the OpenShift namespaces where you want to install RHSI
+* Install Helm and the Skupper (see above) CLI on your development environment
+* Fill out the `values.yaml` file as appropriate. For a minimal install, just update `common.ingress.domain`. See [below](#common-parameters) for a reference list of all parameters. **Skupper by default uses self signed certificates to install**, you can change this by setting `selfSignedCerts` to false. Place your certificates under the certs folder.  Refer to certificates section below on how to create them.
 
-Your kubeconfig is stored in a file in your home directory. The skupper and kubectl commands use the KUBECONFIG environment variable to locate it.
-
-### Installation for the first time is a two step process.
-
-These two steps should be repeated in all the namespaces(assuming east and west are the namespaces) where skupper should be installed.
-
-#### Run these commands on West and East Namespace
-
-1. Install Skupper-site configmap
+### Step 1: Install skupper-site ConfigMap
  
-This will install only a configmap called `skupper-site`. This will hold the information about the skupper site like its name and few other details.
-
-``` helm upgrade --install skupper ./ --set common.siteconfigonly=true``` 
+First, you'll deploy a ConfigMap called `skupper-site`. This holds information about the skupper site, like its name and version.
+```
+helm upgrade --install skupper ./ --set common.siteconfigonly=true
+``` 
        
-2. Deploy other components of skupper. 
+### Step 2: Deploy other components of skupper
 
-Note: Skupper by default uses self signed certificates to install, Check the values files and make sure selfsigned certificates variable is set to false and the anz certificates generated are placed under the certs folder.  Refer to certificates section below on how to create them.
+Next, you'll deploy all of RHSI's other components, including deployments, secrets, rolebindings and more. 
+```
+helm upgrade --install skupper ./ --set siteconfigonly=false
+``` 
 
-``` helm upgrade --install skupper ./ --set siteconfigonly=false``` 
+Check the status of the installation by running ```skupper status``` command.
 
-check the status of the installation by running ```skupper status``` command.
+## Linking to Another RHSI Site
 
-Refer to https://confluence.service.anz/display/CAP/Health+Check+Guide for more information on how to perform a health check.
+Afer you've successully installed Skupper in both the east and west site, you'll want to link them. We call west a "remote site" from east, and vice versa. Skupper links can originate from any site, and they are bi-directional, so there is **no need to create a link from both sites**.
 
-### Linking to Another RHSI Site
+The linking process will change depending on if you've used the self-signed skupper certificates or your own certifcates.
 
-We have successully installed skupper in two different namepsaces. This section details on how to link the skupper routers running in these two namespaces/clusters.
+### Self-Signed Skupper Certificates
+Set `linkTokenCreate` to true on **one site** (or one per pair if you have more than two sites). Copy the token generated on that site using the commands specified by the Helm chart output.
 
-*Note: only links using a custom (i.e. not self-signed) CA is covered here. Self-signed token creation is incomplete, and was abandoned as it did not have much application at ANZ.*
+### Custom Certificates
 
-Skupper links can originate from any one site(cluster) and the link works bi-directional, so there is NO NEED to create a link from both sites.
-
-
-#### What are remote sites?
-The other cluster/namespaces where skupper is installed is called a Remote site. 
-Assuming East namespace as a local skupper site and you want to link it to west namespace, West becomes the remote site of east and Vice-versa
-
-#### what is edgehost and interrouterhost?
-
-Skupper router exposes a route called 'skupper-inter-router' which will be used to allow incoming links from other skupper sites. you can get these URL by running `oc get route skupper-inter-router -o jsonpath='{.spec.host}`
-
-Use the output of this command and update the remotes sites definition for both edgehost and interrouterhost.
+The skupper router exposes a route called 'skupper-inter-router' that will be used to allow incoming links from other skupper sites. You can get the URL by running `oc get route skupper-inter-router -o jsonpath='{.spec.host}` Use the output of this command and update the remotes sites definition for both edgehost and interrouterhost.
 
 For example: 
 
-#### on west namespace
+#### West site
 Grab the interrouter host of west namespace 
 
-`oc get route skupper-inter-router -o jsonpath='{.spec.host}`
+```
+oc get route skupper-inter-router -o jsonpath='{.spec.host}
+```
 
-#### on east namespace
+#### East site
 
-1. In the values file, set the following.
+In the `values.yaml` file, set the following:
 
 ```linkTokenCreate: true
    selfSignedCerts: false
@@ -83,69 +79,74 @@ Grab the interrouter host of west namespace
       interrouterhost: value grabbed from other namespace
 ```
 
-2. Upgrade the Helm chart in the site  - i.e. run
-``` helm upgrade skupper ./ --set siteconfigonly=false``` 
+Upgrade the Helm chart on the east site:
+```
+helm upgrade skupper ./ --set siteconfigonly=false -n east-site
+``` 
 
 ## Moving from another installation of RHSI to this new helm chart
 
-if you already have RHSI installed using anyother method and want to migrate to this chart, it is a very simple two step process.
+If you already have RHSI installed using another method and want to migrate to this chart, it is a very simple two step process.
 
-1. Run converttohelm.sh script by passing the namespace name as a variable. This will convert all the resources that were created previously to be owned by Helm. this script will assume the helm release name to be skupper.
+1. Run converttohelm.sh script and pass the namespace name as a variable. This will convert all the resources that were created previously to be owned by Helm. Note this script assumes the helm release name is `skupper`.
 
-``` converttohelm.sh test-dev-namespace```   
+```
+converttohelm.sh test-dev-namespace
+```   
 
-2. We have now converted all the components to be owned by helm. We can now use the helm chart to upgrade.
+2. Install the helm chart to upgrade. Note that if you are using custom certificates, you need to have those certs placed in the certs folder before running this command.
 
-Note: if you are using custom certs like ANZ CA, make sure you have those certs placed in the certs folder before running this command.
-
-  ```helm upgrade --install skupper ./ --set siteconfigonly=false```
+```
+helm upgrade --install skupper ./ --set siteconfigonly=false
+```
 
 ## Certificates
-This chart by default generates self signed certificates which are used by skupper router and service controller pods. This is controlled by the varialbe from the values file called ```selfSignedCerts```. This defaults to true.
+This chart by default generates self signed certificates that are used by skupper router and service controller pods. This is controlled by the variable from the values file called `selfSignedCerts`. This defaults to true.
 
-To use any custom CA certificates, set the varibale ```selfSignedCerts``` to false in the values.yaml file and place your custom certificates along with the ca in the certs folder before installing this chart.
-The certs folder should contain the following files with the same naming conventions shown below
+To use custom certificates, set `selfSignedCerts` to false and place your custom certificates and Certificate Authority (CA) in the certs folder before installing this chart.
+The certs folder should contain the following files, with the same naming conventions shown below.
 
-1. tls.crt : The certificate that should be used by skupper. This will be used for internal communication between skupper router and service controller and also for inter router communications between skupper routers. The below CN's should be part of the certificate Subject alternative names for the install to work.
+1. `tls.crt`: The certificate that should be used by skupper. This will be used for internal communication between skupper router and service controller and also for inter router communications between skupper routers. The below CN's should be part of the certificate Subject alternative names for the install to work.
 
-        skupper-inter-router-${namespace}.${clusterdomain}  - Interrouter route hostname to communicate across the clusters. if a different hostname is chosen, that should be updated in the values.yaml under customhostname so that the route definition has that name and your cert should have it included in the SAN.
-        skupper-router-local.${namespace}.svc.cluster.local
+    * `skupper-inter-router-${namespace}.${clusterdomain}`: Interrouter route hostname to communicate across the clusters. if a different hostname is chosen, that should be updated in the values.yaml under customhostname so that the route definition has that name and your cert should have it included in the SAN.
 
-Note: If you want to use the same certificate across multiple installations of skupper in different clusters. Just add the CN's of the other clusters in the same certificate. you can use the below template to generate the certificate.
+    * `skupper-router-local.${namespace}.svc.cluster.local`
 
-        ```
-            [req]
-            default_bits = 2048
-            prompt = no
-            default_md = sha256
-            req_extensions = req_ext
-            distinguished_name = dn
+    Note: If you want to use the same certificate across multiple installations of skupper in different clusters. Just add the CN's of the other clusters in the same certificate. you can use the below template to generate the certificate.
 
-            [ dn ]
-            C=AU
-            ST=Victoria
-            L=Melbourne
-            O=Red Hat
-            OU=skupper
-            CN=skupper-inter-router-access.apps-redhat.com
+    ```
+    [req]
+    default_bits = 2048
+    prompt = no
+    default_md = sha256
+    req_extensions = req_ext
+    distinguished_name = dn
 
-            [ req_ext ]
-            subjectAltName = @alt_names
+    [ dn ]
+    C=AU
+    ST=Victoria
+    L=Melbourne
+    O=Red Hat
+    OU=skupper
+    CN=skupper-inter-router-access.apps-redhat.com
 
-            [ alt_names ]
-            DNS.1 = skupper-inter-router-${namespace1}.${subdomain}
-            DNS.2 = skupper-router-local.${namespace1}.svc.cluster.local
-            DNS.3 = skupper-router.{namespace1}.svc.cluster.local
-            DNS.4 = skupper-inter-router-${namespace2}.${subdomain}
-            DNS.5 = skupper-router-local.${namespace2}.svc.cluster.local
-            DNS.6 = skupper-router.{namespace2}.svc.cluster.local
-        ```
+    [ req_ext ]
+    subjectAltName = @alt_names
+
+    [ alt_names ]
+    DNS.1 = skupper-inter-router-${namespace1}.${subdomain}
+    DNS.2 = skupper-router-local.${namespace1}.svc.cluster.local
+    DNS.3 = skupper-router.{namespace1}.svc.cluster.local
+    DNS.4 = skupper-inter-router-${namespace2}.${subdomain}
+    DNS.5 = skupper-router-local.${namespace2}.svc.cluster.local
+    DNS.6 = skupper-router.{namespace2}.svc.cluster.local
+    ```
         
-2. tls.key : key for the certificate
-3. ca.crt : Certificate authority who signed this certificate.
+2. `tls.key`: key for the certificate.
+3. `ca.crt`: Certificate Authority who signed the certificate.
 
-
-## Common parameters
+## List of Valid Parameters for `values.yaml`
+### Common parameters
 
 | Name                 | Description                                                                                                    | Value           |
 | ------               | -------------------------------------------------------------------------------------------------------------- | --------------- |
@@ -158,7 +159,7 @@ Note: If you want to use the same certificate across multiple installations of s
 | `selfSignedCerts`    | self signed certs are generated at run time defaults to true                                                        | `"true/false"`            |
 | `linkTokenCreate`    | Creates a token that can used to establish a link with remote sites defaults to true                              | `""`            |
 
-### skupper Router parameters
+### Skupper router parameters
 
 | Name                 | Description                                                                                                    | Value           |
 | ------               | -------------------------------------------------------------------------------------------------------------- | --------------- |
@@ -184,7 +185,7 @@ Note: If you want to use the same certificate across multiple installations of s
 | `serviceController.memory.limits`    | Enable service controller memory limits                                                        | `"256Mi"`       
 
 
-### flow collector parameters
+### Flow collector parameters
 
 | Name                 | Description                                                                                                    | Value           |
 | ------               | -------------------------------------------------------------------------------------------------------------- | --------------- |
@@ -195,31 +196,23 @@ Note: If you want to use the same certificate across multiple installations of s
 | `flowController.memory.limits`    | Flow controller memory Limits                                                          | `"256Mi"`            |
 
 
-## Health Check:
+## Troubleshooting and Health Check Tips
 
 Status of installation.
 
-    *   skupper status 
+    skupper status 
 
 View link status
 
-    * skupper link status
+    skupper link status
 
 View services exposed
 
-    * skupper service status
+    skupper service status
 
-Skupper cli can be downloaded here https://skupper.io/releases/index.html
-
-https://confluence.service.anz/display/CAP/Health+Check+Guide
-
-run skupper debug events and check the service sync event if it was established. the event will look like below.  If the certs are not correct, you will see an error here about certificates.
-
-
-View skupper events
- 
-    *   skupper debug events
-``` 
+Run skupper debug events and check if the service sync event if it was established. The event will look like below.  If the certs are not correct, you will see an error here about certificates.
+```
+$ skupper debug events 
 
 ServiceSyncEvent             4                                                                                     2m25s
                              1     Service interface(s) modified web                                               2m25s
