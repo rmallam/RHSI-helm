@@ -1,4 +1,4 @@
-# Overview of this RHSI Helm Chart
+# Red Hat Service Interconnect Helm Chart
 
 This chart provides an easy and seamless install of Red Hat Service Interconnect (RHSI) on OpenShift. All the options that are available with `skupper init` Command-Line Interface (CLI) command are available in this helm chart too.
 
@@ -198,19 +198,20 @@ The certs folder should contain the following files, with the same naming conven
 
 ## Troubleshooting and Health Check Tips
 
-Status of installation.
+Status of installation:
+```
+skupper status 
+```
+View link status:
+```
+skupper link status
+```
+View services exposed:
+```
+skupper service status
+```
 
-    skupper status 
-
-View link status
-
-    skupper link status
-
-View services exposed
-
-    skupper service status
-
-Run skupper debug events and check if the service sync event if it was established. The event will look like below.  If the certs are not correct, you will see an error here about certificates.
+If your sites aren't connected, run `skupper debug events` and check the service sync event to see if it the connection was established. The event will look like below.  If the certificates are not correct, you will see an error here about certificates.
 ```
 $ skupper debug events 
 
