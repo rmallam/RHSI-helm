@@ -57,16 +57,16 @@ serviceController:
     limits: 256Mi
 
 flowCollector:  #  this will help in generating metrics
-  enabled: false
-  # image:
-  #   repository: "quay.io/skupper/flow-collector"
-  #   tag: "1.4.2"
-  # cpu:
-  #   requests: 300m
-  #   limits: 1
-  # memory:
-  #   requests: 1Gi
-  #   limits: 1Gi
+  enabled: true
+  image:
+    repository: "quay.io/skupper/flow-collector"
+    tag: "1.4.2"
+  cpu:
+    requests: 300m
+    limits: 1
+  memory:
+    requests: 1Gi
+    limits: 1Gi
 prometheus:  #  this will help in generating metrics
   image:
     repository: "quay.io/prometheus/prometheus"
@@ -80,7 +80,7 @@ prometheus:  #  this will help in generating metrics
 
 
 remoteSites:
-  - name: udeploy-agents-dev-di1001
+  - name: example-west
     edgehost: remoteistedetails
     interrouterhost: remoteistedetails
 
