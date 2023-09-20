@@ -40,7 +40,7 @@ helm upgrade --install skupper ./ --set common.siteconfigonly=true
 
 Next, you'll deploy all of RHSI's other components, including deployments, secrets, rolebindings and more. 
 ```
-helm upgrade --install skupper ./ --set siteconfigonly=false
+helm upgrade --install skupper ./ --set common.siteconfigonly=false
 ``` 
 
 Check the status of the installation by running ```skupper status``` command.
