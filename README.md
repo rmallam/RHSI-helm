@@ -54,6 +54,12 @@ The linking process will change depending on if you've used the self-signed skup
 ### Self-Signed Skupper Certificates
 Set `linkTokenCreate` to true on **one site** (or one per pair if you have more than two sites). Copy the token generated on that site using the commands specified by the Helm chart output.
 
+This will create a secret called **skupper-link-token** which should be extracted and copied on to the remote site.
+
+```
+oc get secret skupper-link-token -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > connectiontoken.yaml
+```
+
 ### Custom Certificates
 
 The skupper router exposes a route called 'skupper-inter-router' that will be used to allow incoming links from other skupper sites. You can get the URL by running `oc get route skupper-inter-router -o jsonpath='{.spec.host}` Use the output of this command and update the remotes sites definition for both edgehost and interrouterhost.
