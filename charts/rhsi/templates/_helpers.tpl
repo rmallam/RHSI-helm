@@ -5,7 +5,7 @@ tls.crt:  {{ index $secret.data "tls.crt" }}
 ca.crt:  {{ index $secret.data "ca.crt" }}
 tls.key:  {{ index $secret.data "tls.key" }}
 {{- else }}
-{{- $altNames := list ( printf "%s-%s.%s" "skupper-inter-router" .Release.Namespace .Values.common.ingress.domain ) ( printf "%s.%s.svc.cluster.local" "skupper-router-local" .Release.Namespace ) -}}
+{{- $altNames := list ( printf "%s-%s.%s" "skupper-inter-router" .Release.Namespace .Values.common.ingress.domain ) ( printf "%s" .Values.common.ingress.host ) ( printf "%s.%s.svc.cluster.local" "skupper-router-local" .Release.Namespace ) -}}
 {{- $ca := genCA "skupper-ca" 365 -}}
 {{- $cert := genSignedCert .Release.Name nil $altNames 365 $ca -}}
 tlscrt: {{ $cert.Cert | b64enc }}
@@ -66,5 +66,15 @@ skupper router affinity
 {{- define "router.affinity" -}}
 {{- if .Values.router.affinity }}
 {{- toYaml .Values.router.affinity }}
+{{- end -}}
+{{- end -}}
+
+{{- define "router.svctype" -}}
+{{- if eq .Values.common.ingressType "route" }}
+{{- printf "%s" "ClusterIP" }}
+{{- else if eq .Values.common.ingressType "nodeport" }}
+{{- printf "%s" "NodePort" }}
+{{- else if eq .Values.common.ingressType "loadbalancer" }}
+{{- printf "%s" "LoadBalancer" }}
 {{- end -}}
 {{- end -}}

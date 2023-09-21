@@ -18,6 +18,5 @@ spec:
     app.kubernetes.io/part-of: skupper
     application: skupper-router
     skupper.io/component: router
-  type: ClusterIP
-
+  type: {{ include "router.svctype" .}}
 {{- end }}
