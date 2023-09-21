@@ -22,5 +22,5 @@ spec:
     app.kubernetes.io/part-of: skupper
     skupper.io/component: service-controller
   sessionAffinity: None
-  type: ClusterIP
+  type: {{ include "router.svctype" .}}
 {{- end }}

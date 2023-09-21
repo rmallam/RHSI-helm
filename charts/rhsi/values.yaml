@@ -3,9 +3,10 @@
 # image versions are based on the releases from skupper.io, Every release of skupper will have four containers(at the time of document 20/10). Check the mainfest for each release and push them to DTR.
 common:
   siteconfigonly: false
-  ingressType: "route"
+  ingressType: "route"  #  [route|loadbalancer|nodeport|nginx-ingress-v1|contour-http-proxy|ingress|none]. If not specified route is used when available, otherwise loadbalancer is used.
   ingress:
-    domain: "apps.example.com"  #  Domain of the cluster, like "apps-int.di1001.cpaas.test".
+    domain: "apps.example.com"  #  Domain of the cluster, like "apps-int.di1001.cpaas.test". mainly used for routes
+    host: "rakesh-fedora"  # used mainly when ingress Type is set to nodeport
 
 console:
   enabled: true

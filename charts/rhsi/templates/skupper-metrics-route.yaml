@@ -1,4 +1,4 @@
-{{ if not .Values.common.siteconfigonly }}
+{{ if and (not .Values.common.siteconfigonly) (eq .Values.common.ingressType "route") }}
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
