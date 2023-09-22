@@ -30,8 +30,10 @@ env:
   # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
   # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
   # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
-  OPENSHIFT_SERVER: ${{ secrets.AWS_OPENSHIFT_API }}
-  OPENSHIFT_TOKEN: ${{ secrets.AWS_OPENSHIFT_TOKEN }}
+  AWS_OPENSHIFT_SERVER: ${{ secrets.AWS_OPENSHIFT_API }}
+  AWS_OPENSHIFT_TOKEN: ${{ secrets.AWS_OPENSHIFT_TOKEN }}
+  AZURE_OPENSHIFT_SERVER: ${{ secrets.AZURE_OPENSHIFT_API }}
+  AZURE_OPENSHIFT_TOKEN: ${{ secrets.AZURE_OPENSHIFT_TOKEN }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   OPENSHIFT_NAMESPACE: ""
 
@@ -85,12 +87,27 @@ jobs:
     - name: Log in to aws OpenShift
       uses: redhat-actions/oc-login@v1
       with:
-        openshift_server_url: ${{ env.OPENSHIFT_SERVER }}
-        openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+        openshift_server_url: ${{ env.AWS_OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.AWS_OPENSHIFT_TOKEN }}
         insecure_skip_tls_verify: true
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
         kubeconfig: /tmp/aws
 
     - name: Print namespaces
       run: |
-        oc projects
+        oc whoami --show-server
+        oc new-project skupper
+
+    - name: Log in to aws OpenShift
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ env.AZURE_OPENSHIFT_SERVER }}
+        openshift_token: ${{ env.AZURE_OPENSHIFT_TOKEN }}
+        insecure_skip_tls_verify: true
+        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+        kubeconfig: /tmp/aws
+
+    - name: Print namespaces
+      run: |
+        oc whoami --show-server
+        oc new-project skupper
