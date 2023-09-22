@@ -72,7 +72,16 @@ jobs:
         helm upgrade --install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
         helm upgrade --install --create-namespace --namespace skupper \
-             skupper charts/rhsi --set common.siteconfigonly=false --set flowCollector.enabled=false
+             skupper charts/rhsi --set common.siteconfigonly=false --set flowCollector.enabled=false \
+             --set common.ingress.domain=apps.cluster-xnhcv.xnhcv.sandbox2273.opentlc.com
+
+    - name: get link linkTokenCreate
+      run: oc get secret skupper-link-token -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > connectiontoken.yaml
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: token
+        path: connectiontoken.yaml
 
   Azure:
     # 🖊️ Uncomment this if you are using CRDA scan step above
@@ -111,4 +120,13 @@ jobs:
         helm upgrade --install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
         helm  upgrade --install --create-namespace --namespace skupper \
-             skupper charts/rhsi --set common.siteconfigonly=false --set flowCollector.enabled=false
+             skupper charts/rhsi --set common.siteconfigonly=false --set flowCollector.enabled=false \
+             --set common.ingress.domain=apps.azure-xnhcv-1.xnhcv-1.sandbox2512.opentlc.com
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: token
+
+    - name: Link To AWS Site
+      run: |
+        oc apply -f connectiontoken.yaml
