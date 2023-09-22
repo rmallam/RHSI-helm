@@ -78,6 +78,11 @@ jobs:
     environment: production
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
     - name: Install oc
       uses: redhat-actions/openshift-tools-installer@v1
       with:
@@ -99,7 +104,11 @@ jobs:
     - name: Print namespaces
       run: |
         oc whoami --show-server
-        oc new-project skupper
+        oc project skupper
+        helm install --create-namespace --namespace skupper \
+               skupper charts/rhsi --set common.siteconfigonly=true
+        helm install --create-namespace --namespace skupper \
+             skupper charts/rhsi --set common.siteconfigonly=false
 
     - name: Log in to Azure OpenShift
       uses: redhat-actions/oc-login@v1
@@ -113,4 +122,8 @@ jobs:
     - name: Print namespaces on azure
       run: |
         oc whoami --show-server
-        oc new-project skupper
+        oc project skupper
+        helm install --create-namespace --namespace skupper \
+               skupper charts/rhsi --set common.siteconfigonly=true
+        helm install --create-namespace --namespace skupper \
+             skupper charts/rhsi --set common.siteconfigonly=false
