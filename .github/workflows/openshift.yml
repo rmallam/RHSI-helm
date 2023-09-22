@@ -88,6 +88,7 @@ jobs:
     # 🖊️ Uncomment this if you are using CRDA scan step above
     # needs: crda-scan
     name: Install RHSI on Azure
+    needs: AWS
     runs-on: ubuntu-20.04
     environment: production
 
