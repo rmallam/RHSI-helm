@@ -107,7 +107,7 @@ jobs:
         oc project skupper
         helm install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
-        helm install --create-namespace --namespace skupper \
+        helm upgrade --install --create-namespace --namespace skupper \
              skupper charts/rhsi --set common.siteconfigonly=false
 
     - name: Log in to Azure OpenShift
@@ -125,5 +125,5 @@ jobs:
         oc project skupper
         helm install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
-        helm install --create-namespace --namespace skupper \
+        helm  upgrade --install --create-namespace --namespace skupper \
              skupper charts/rhsi --set common.siteconfigonly=false
