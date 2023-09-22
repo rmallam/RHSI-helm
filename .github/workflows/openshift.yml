@@ -82,6 +82,9 @@ jobs:
       uses: redhat-actions/openshift-tools-installer@v1
       with:
         oc: 4
+              
+    - name: Helm tool installer
+      uses: Azure/setup-helm@v3
 
     # https://github.com/redhat-actions/oc-login#readme
     - name: Log in to aws OpenShift
