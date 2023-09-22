@@ -24,8 +24,8 @@ router:
     requests: 100m
     limits: 2
   memory:
-    requests: 2Gi
-    limits: 4Gi
+    requests: 128Mi
+    limits: 1Gi
   annotations:
     prometheus.io/port: "9090"  #  required for flow controller to get logs
     prometheus.io/scrape: "true"  #  required for flow controller to get logs
@@ -66,7 +66,7 @@ flowCollector:  #  this will help in generating metrics
     requests: 300m
     limits: 1
   memory:
-    requests: 1Gi
+    requests: 128Mi
     limits: 1Gi
 prometheus:  #  this will help in generating metrics
   image:
@@ -76,7 +76,7 @@ prometheus:  #  this will help in generating metrics
     requests: 200m
     limits: 200m
   memory:
-    requests: 256Mi
+    requests: 128Mi
     limits: 256Mi
 
 
@@ -88,7 +88,6 @@ remoteSites:
 selfSignedCerts: true
 
 linkTokenCreate: true
-
 
 secrets:
   - skupper-claims-server
