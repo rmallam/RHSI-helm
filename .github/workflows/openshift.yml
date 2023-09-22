@@ -74,7 +74,7 @@ jobs:
              --set common.ingress.domain=apps.cluster-xnhcv.xnhcv.sandbox2273.opentlc.com
 
     - name: get link linkTokenCreate
-      run: oc get secret skupper-link-token -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > /tmp/connectiontoken.yaml
+      run: oc get secret skupper-link-token -n skupper -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > /tmp/connectiontoken.yaml
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.3     
@@ -130,4 +130,4 @@ jobs:
 
     - name: Link To AWS Site
       run: |
-        oc apply -f /tmp/connectiontoken.yaml
+        oc apply -n skupper -f /tmp/connectiontoken.yaml 
