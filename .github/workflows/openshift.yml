@@ -67,8 +67,6 @@ jobs:
 
     - name: Install RHSI
       run: |
-        oc whoami --show-server
-        oc project skupper
         helm upgrade --install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
         helm upgrade --install --create-namespace --namespace skupper \
@@ -115,10 +113,8 @@ jobs:
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
         kubeconfig: /tmp/aws
 
-    - name: Print namespaces on azure
+    - name: Install RHSI on Azure
       run: |
-        oc whoami --show-server
-        oc project skupper
         helm upgrade --install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
         helm  upgrade --install --create-namespace --namespace skupper \
