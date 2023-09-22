@@ -76,12 +76,13 @@ jobs:
              --set common.ingress.domain=apps.cluster-xnhcv.xnhcv.sandbox2273.opentlc.com
 
     - name: get link linkTokenCreate
-      run: oc get secret skupper-link-token -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > connectiontoken.yaml
+      run: oc get secret skupper-link-token -o yaml | grep -v creationTimestamp | grep -v namespace | grep -v uid | grep -v resourceVersion | grep -v "kubectl.kubernetes.io/last-applied-configuration"  > /tmp/connectiontoken.yaml
 
-    - uses: actions/upload-artifact@v2
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.3     
       with:
-        name: token
-        path: connectiontoken.yaml
+        name: linktoken
+        path: /tmp/connectiontoken.yaml
 
   Azure:
     # 🖊️ Uncomment this if you are using CRDA scan step above
@@ -123,10 +124,13 @@ jobs:
              skupper charts/rhsi --set common.siteconfigonly=false --set flowCollector.enabled=false \
              --set common.ingress.domain=apps.azure-xnhcv-1.xnhcv-1.sandbox2512.opentlc.com
 
-    - uses: actions/download-artifact@v2
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.1.1
       with:
-        name: token
+        name: linktoken
+        path: /tmp
+            
 
     - name: Link To AWS Site
       run: |
-        oc apply -f connectiontoken.yaml
+        oc apply -f /tmp/connectiontoken.yaml
