@@ -98,7 +98,7 @@ jobs:
         oc whoami --show-server
         oc new-project skupper
 
-    - name: Log in to aws OpenShift
+    - name: Log in to Azure OpenShift
       uses: redhat-actions/oc-login@v1
       with:
         openshift_server_url: ${{ env.AZURE_OPENSHIFT_SERVER }}
@@ -107,7 +107,7 @@ jobs:
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
         kubeconfig: /tmp/aws
 
-    - name: Print namespaces
+    - name: Print namespaces on azure
       run: |
         oc whoami --show-server
         oc new-project skupper
