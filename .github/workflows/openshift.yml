@@ -105,7 +105,7 @@ jobs:
       run: |
         oc whoami --show-server
         oc project skupper
-        helm install --create-namespace --namespace skupper \
+        helm upgrade --install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
         helm upgrade --install --create-namespace --namespace skupper \
              skupper charts/rhsi --set common.siteconfigonly=false
@@ -123,7 +123,7 @@ jobs:
       run: |
         oc whoami --show-server
         oc project skupper
-        helm install --create-namespace --namespace skupper \
+        helm upgrade --install --create-namespace --namespace skupper \
                skupper charts/rhsi --set common.siteconfigonly=true
         helm  upgrade --install --create-namespace --namespace skupper \
              skupper charts/rhsi --set common.siteconfigonly=false
