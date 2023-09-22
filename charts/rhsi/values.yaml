@@ -63,7 +63,7 @@ flowCollector:  #  this will help in generating metrics
     repository: "quay.io/skupper/flow-collector"
     tag: "1.4.2"
   cpu:
-    requests: 300m
+    requests: 100m
     limits: 1
   memory:
     requests: 128Mi
@@ -73,7 +73,7 @@ prometheus:  #  this will help in generating metrics
     repository: "quay.io/prometheus/prometheus"
     version: "v2.42.0"
   cpu:
-    requests: 200m
+    requests: 100m
     limits: 200m
   memory:
     requests: 128Mi
