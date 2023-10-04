@@ -31,7 +31,7 @@ on:
   workflow_dispatch:
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ "main" ]
+    branches: [ "testing" ]
 
 jobs:
   AWS:

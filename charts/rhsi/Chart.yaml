@@ -2,7 +2,7 @@ apiVersion: v2
 name: skupper
 description: A Helm chart for Red Hat Service interconnect installation
 type: application
-version: 1.5.1
+version: 1.5.2
 appVersion: "1.4.2"
 maintainers:
   - email: rmallam@redhat.com

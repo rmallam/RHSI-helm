@@ -50,7 +50,7 @@ Skupper cli can be downloaded here chttps://skupper.io/releases/index.html
 
 {{- if and .Values.linkTokenCreate .Values.selfSignedCerts -}}
 
-        **** Link information ****
+        ***** Link information *****
 
 Link token has been created as a secret called skupper-link-token, You will now need to extract the secret and deploy it on the other cluster to establish the link between the clusters.
 
