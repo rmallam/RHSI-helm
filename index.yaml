@@ -1,0 +1,19 @@
+apiVersion: v1
+entries:
+  skupper:
+  - apiVersion: v2
+    appVersion: 1.4.2
+    created: "2023-10-04T02:57:13.967584945Z"
+    description: A Helm chart for Red Hat Service interconnect installation
+    digest: 17fdf55929228d39cf4ada9298f6fd5c992e979d16fcbfb1b0b8835c13eb1984
+    maintainers:
+    - email: rmallam@redhat.com
+      name: rkm
+    - email: apollo@redhat.com
+      name: apollo
+    name: skupper
+    type: application
+    urls:
+    - https://github.com/rmallam/RHSI-helm/releases/download/skupper-1.5.2/skupper-1.5.2.tgz
+    version: 1.5.2
+generated: "2023-10-04T02:57:13.967600045Z"
