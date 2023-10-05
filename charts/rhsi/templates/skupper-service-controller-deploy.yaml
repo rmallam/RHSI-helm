@@ -140,8 +140,6 @@ spec:
           value: {{ .Release.Namespace }}
         - name: SKUPPER_SITE_NAME
           value: {{ .Release.Namespace }}
-        - name: SKUPPER_SITE_ID
-          value: {{ include "skupper.siteuid" .}}
         - name: SKUPPER_SERVICE_ACCOUNT
           value: skupper-router
         - name: SKUPPER_ROUTER_MODE
@@ -155,6 +153,7 @@ spec:
         image: {{ .Values.flowCollector.image.repository }}:{{ .Values.flowCollector.image.tag }}
         imagePullPolicy: Always
         name: flow-collector
+        command: ["/bin/sh", "-c", "source /etc/sharedvol/env && /app/flow-collector"]
         resources:
             limits:
               cpu: "{{ .Values.flowCollector.cpu.limits }}"
