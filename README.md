@@ -28,19 +28,26 @@ Before you deploy RHSI, you need to:
 * Have project administrator access to the OpenShift namespaces where you want to install RHSI
 * Install Helm and the Skupper (see above) CLI on your development environment
 * Fill out the `values.yaml` file as appropriate. For a minimal install, just update `common.ingress.domain`. See [below](#common-parameters) for a reference list of all parameters. **Skupper by default uses self signed certificates to install**, you can change this by setting `selfSignedCerts` to false. Place your certificates under the certs folder.  Refer to certificates section below on how to create them.
+### Deploy RHSI Using the helm chart
 
-### Step 1: Install skupper-site ConfigMap
- 
-First, you'll deploy a ConfigMap called `skupper-site`. This holds information about the skupper site, like its name and version.
-```
-helm upgrade --install skupper ./ --set common.siteconfigonly=true
-``` 
-       
-### Step 2: Deploy other components of skupper
+Install the helm chart using the command below, This will install all the components of skupper like Deployments, Secrets, ConfigMaps etc.
 
-Next, you'll deploy all of RHSI's other components, including deployments, secrets, rolebindings and more. 
+Add the rhsi helm repo.
 ```
-helm upgrade --install skupper ./ --set common.siteconfigonly=false
+helm repo add rhsi https://rmallam.github.io/RHSI-helm
+```
+
+Run install
+
+```
+helm install skupper rhsi/skupper
+```
+
+**OR**
+
+clone the git repo and naviage into the RHSI-helm folder. Run the following command.
+```
+helm upgrade --install skupper ./charts/rhsi
 ``` 
 
 Check the status of the installation by running ```skupper status``` command.

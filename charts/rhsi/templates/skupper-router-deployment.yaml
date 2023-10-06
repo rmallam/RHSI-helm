@@ -35,12 +35,28 @@ spec:
                 matchLabels:
                   app.kubernetes.io/name: {{ .Values.router.name }}
                   app.kubernetes.io/instance: {{ .Release.Name }}
+      initContainers: 
+      - name: getuids
+        image: quay.io/openshift/origin-cli:4.12.0
+        command: 
+          - "/bin/sh"
+          - "-c"
+          - |
+            until SKUPPER_SITE_ID=$(oc get cm skupper-site -o jsonpath='{.metadata.uid}') ; do echo "waiting"; sleep 2; done ; echo "export SKUPPER_SITE_ID=${SKUPPER_SITE_ID}" > /etc/sharedvol/env
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        volumeMounts:
+        - mountPath: /etc/sharedvol
+          name: sharedvol
       containers:
       - env:
         - name: APPLICATION_NAME
           value: skupper-router
-        - name: SKUPPER_SITE_ID
-          value: {{ include "skupper.siteuid" .}}
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -59,6 +75,7 @@ spec:
           value: json
         image: {{ .Values.router.image.repository }}:{{ .Values.router.image.version }}
         imagePullPolicy: {{ .Values.router.image.pullPolicy }}
+        command: ["/bin/sh", "-c", "source /etc/sharedvol/env && /home/skrouterd/bin/launch.sh"]
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -106,6 +123,8 @@ spec:
             mountPath: /etc/skupper-router-certs
           - name: skupper-site-server
             mountPath: /etc/skupper-router-certs/skupper-internal/
+          - mountPath: /etc/sharedvol
+            name: sharedvol
       - image: {{ .Values.configSync.image.repository }}:{{ .Values.configSync.image.version }}
         imagePullPolicy: {{ .Values.configSync.image.pullPolicy }}
         name: config-sync
@@ -149,4 +168,6 @@ spec:
         secret:
           secretName: skupper-service-client
           defaultMode: 420
+      - name: sharedvol
+        emptyDir: {}
 {{- end }}

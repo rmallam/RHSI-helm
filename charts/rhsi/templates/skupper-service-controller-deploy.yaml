@@ -26,7 +26,12 @@ spec:
       initContainers: 
       - name: getuids
         image: quay.io/openshift/origin-cli:4.12.0
-        command: ["/bin/bash", "-c", "echo export OWNER_UID=`oc get deploy skupper-router -o jsonpath='{.metadata.uid}'` > /etc/sharedvol/env"]
+        command: 
+          - "/bin/sh"
+          - "-c"
+          - |
+            until SKUPPER_SITE_ID=$(oc get cm skupper-site -o jsonpath='{.metadata.uid}') ; do echo "waiting"; sleep 2; done ; echo "export SKUPPER_SITE_ID=${SKUPPER_SITE_ID}" > /etc/sharedvol/env
+            until OWNER_UID=$(oc get deploy skupper-router -o jsonpath='{.metadata.uid}'); do echo "waiting"; sleep 2; done; echo "export OWNER_UID=${OWNER_UID}" >> /etc/sharedvol/env
         resources:
           limits:
             cpu: 100m
@@ -43,8 +48,6 @@ spec:
           value: {{ .Release.Namespace }}
         - name: SKUPPER_SITE_NAME
           value: {{ .Release.Namespace }}
-        - name: SKUPPER_SITE_ID
-          value: {{ include "skupper.siteuid" .}}
         - name: SKUPPER_SERVICE_ACCOUNT
           value: skupper-router
         - name: SKUPPER_ROUTER_MODE
@@ -137,8 +140,6 @@ spec:
           value: {{ .Release.Namespace }}
         - name: SKUPPER_SITE_NAME
           value: {{ .Release.Namespace }}
-        - name: SKUPPER_SITE_ID
-          value: {{ include "skupper.siteuid" .}}
         - name: SKUPPER_SERVICE_ACCOUNT
           value: skupper-router
         - name: SKUPPER_ROUTER_MODE
@@ -152,6 +153,7 @@ spec:
         image: {{ .Values.flowCollector.image.repository }}:{{ .Values.flowCollector.image.tag }}
         imagePullPolicy: Always
         name: flow-collector
+        command: ["/bin/sh", "-c", "source /etc/sharedvol/env && /app/flow-collector"]
         resources:
             limits:
               cpu: "{{ .Values.flowCollector.cpu.limits }}"
@@ -180,6 +182,8 @@ spec:
         - name: skupper-local-client
           mountPath: /etc/messaging/ca.crt
           subPath: ca.crt
+        - mountPath: /etc/sharedvol
+          name: sharedvol
 {{- if and .Values.console.enabled (eq (.Values.console.auth) "internal") }}
         - name: skupper-console-users
           mountPath: /etc/console-users/
