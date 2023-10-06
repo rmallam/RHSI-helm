@@ -45,10 +45,12 @@ helm install skupper rhsi/skupper
 
 **OR**
 
-clone the git repo and naviage into the RHSI-helm folder. Run the following command.
+clone the git repo and navigate into the RHSI-helm folder. Run the following command.
 ```
 helm upgrade --install skupper ./charts/rhsi
 ``` 
+
+## Status
 
 Check the status of the installation by running ```skupper status``` command.
 
