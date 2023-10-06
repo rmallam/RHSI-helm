@@ -52,8 +52,14 @@ helm upgrade --install skupper ./charts/rhsi
 
 ## Status
 
-Check the status of the installation by running ```skupper status``` command.
+Check the status of the installation by running following command.
 
+```
+skupper status
+Skupper is enabled for namespace "skupper-2" in interior mode. It is not connected to any other sites. It has no exposed services.
+The site console url is:  https://skupper-skupper-2.apps-crc.testing
+
+```
 ## Linking to Another RHSI Site
 
 Afer you've successully installed Skupper in both the east and west site, you'll want to link them. We call west a "remote site" from east, and vice versa. Skupper links can originate from any site, and they are bi-directional, so there is **no need to create a link from both sites**.
