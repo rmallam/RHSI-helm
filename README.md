@@ -92,7 +92,8 @@ oc get route skupper-inter-router -o jsonpath='{.spec.host}
 
 In the `values.yaml` file, set the following:
 
-```linkTokenCreate: true
+```
+linkTokenCreate: true
    selfSignedCerts: false
     remoteSites:
     - name: Remote site name for reference
