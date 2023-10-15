@@ -1,4 +1,4 @@
-# Red Hat Service Interconnect Helm Chart
+                                         # Red Hat Service Interconnect Helm Chart
 
 This chart provides an easy and seamless install of Red Hat Service Interconnect (RHSI) on OpenShift. All the options that are available with `skupper init` Command-Line Interface (CLI) command are available in this helm chart too.
 
@@ -15,7 +15,7 @@ curl https://skupper.io/install.sh | sh
 It prompts you to add the command to your path if necessary.
 
 ### Windows/Manual Install
-See https://skupper.io/install/index.html.
+See [Here](https://skupper.io/install/index.html) .
 
 
 ## Deploy Skupper in each OpenShift namespace
