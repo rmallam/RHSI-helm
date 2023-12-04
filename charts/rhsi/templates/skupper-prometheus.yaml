@@ -18,12 +18,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      annotations:
-        meta.helm.sh/release-name: skupper
-        meta.helm.sh/release-namespace: mas-dev-di1001
-      creationTimestamp: null
       labels:
-        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: skupper-prometheus
         app.kubernetes.io/part-of: skupper
         skupper.io/component: prometheus
