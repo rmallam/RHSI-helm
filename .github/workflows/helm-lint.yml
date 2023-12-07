@@ -79,7 +79,7 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           set -e
-          helm upgrade --install skupper ./ -n skupper-3 --create-namespace --set common.ingressType=loadbalancer
+          helm upgrade --install skupper charts/rhsi -n skupper-2 --create-namespace --set common.ingressType=loadbalancer
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-router -n skupper
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller -n skupper
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus -n skupper
@@ -89,7 +89,7 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           set -e
-          helm upgrade --install skupper ./ -n skupper-3 --create-namespace --set common.ingressType=nodeport
+          helm upgrade --install skupper charts/rhsi -n skupper-3 --create-namespace --set common.ingressType=nodeport
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-router -n skupper
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller -n skupper
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus -n skupper
