@@ -70,9 +70,9 @@ jobs:
           kubectl apply -f route-crd.yaml
           helm install --create-namespace --namespace skupper \
                skupper charts/rhsi
-          kubectl wait --for=condition=available --timeout=60s deploy/skupper-router
-          kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller
-          kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-router -n skupper
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller -n skupper
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus -n skupper
           skupper debug events -n skupper | grep -q established
 
           
