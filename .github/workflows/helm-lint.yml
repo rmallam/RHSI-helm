@@ -63,13 +63,33 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         uses: helm/kind-action@v1.7.0
 
-      - name: Install RHSI siteconfigOnly
+      - name: Install RHSI with Ingress Type Route
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           set -e
           kubectl apply -f route-crd.yaml
           helm install --create-namespace --namespace skupper \
                skupper charts/rhsi
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-router -n skupper
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller -n skupper
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus -n skupper
+          skupper debug events -n skupper | grep -q established
+
+      - name: Install RHSI with Ingress Type LoadBalancer
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          set -e
+          helm upgrade --install skupper ./ -n skupper-3 --create-namespace --set common.ingressType=loadbalancer
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-router -n skupper
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller -n skupper
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus -n skupper
+          skupper debug events -n skupper | grep -q established
+
+      - name: Install RHSI with Ingress Type nodeport
+        if: steps.list-changed.outputs.changed == 'true'
+        run: |
+          set -e
+          helm upgrade --install skupper ./ -n skupper-3 --create-namespace --set common.ingressType=nodeport
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-router -n skupper
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller -n skupper
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus -n skupper

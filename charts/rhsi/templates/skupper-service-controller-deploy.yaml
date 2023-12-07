@@ -109,7 +109,9 @@ spec:
             memory: "{{ .Values.serviceController.memory.requests }}"
         securityContext:
           runAsNonRoot: true
-          runAsUser: 2000
+{{- if not (eq (.Values.common.cluster) "openshift") }}
+        runAsUser: 2000
+{{- end }}
         startupProbe:
           failureThreshold: 60
           httpGet:
@@ -198,7 +200,9 @@ spec:
       schedulerName: default-scheduler
       securityContext:
         runAsNonRoot: true
+{{- if not (eq (.Values.common.cluster) "openshift") }}
         runAsUser: 2000
+{{- end }}
       serviceAccount: skupper-service-controller
       serviceAccountName: skupper-service-controller
       terminationGracePeriodSeconds: 30
