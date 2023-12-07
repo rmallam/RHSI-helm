@@ -1,4 +1,4 @@
-{{ if not .Values.common.siteconfigonly }}
+
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -16,4 +16,3 @@ data:
         "verify": true
         }
     } 
-{{- end }}

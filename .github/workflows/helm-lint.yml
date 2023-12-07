@@ -20,18 +20,23 @@ jobs:
         with:
           version: v3.12.1
 
-      - name: Set up podman
-        run: |
-          source /etc/os-release
-          echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-          curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | sudo apt-key add -
-          sudo apt-get update
-          sudo apt-get -y install podman
+      # - name: Set up podman
+      #   run: |
+      #     source /etc/os-release
+      #     echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+      #     curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | sudo apt-key add -
+      #     sudo apt-get update
+      #     sudo apt-get -y install podman
 
       - name: Set up oc client
         run: |
           wget https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
           sudo tar xzvf oc.tar.gz -C /usr/local/bin
+
+      - name: Install skupper cli
+        run: |
+          curl https://skupper.io/install.sh | sh
+          skupper version
           
       - uses: actions/setup-python@v4
         with:
@@ -61,8 +66,14 @@ jobs:
       - name: Install RHSI siteconfigOnly
         if: steps.list-changed.outputs.changed == 'true'
         run: |
+          set -e
           helm install --create-namespace --namespace skupper \
-               skupper charts/rhsi --set common.siteconfigonly=true
-          helm template charts/rhsi --set common.siteconfigonly=false
+               skupper charts/rhsi
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-router
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-service-controller
+          kubectl wait --for=condition=available --timeout=60s deploy/skupper-prometheus
+          skupper debug events -n skupper | grep -q established
+
+          
 
             
