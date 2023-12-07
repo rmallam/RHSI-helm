@@ -67,6 +67,7 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         run: |
           set -e
+          kubectl apply -f route-crd.yaml
           helm install --create-namespace --namespace skupper \
                skupper charts/rhsi
           kubectl wait --for=condition=available --timeout=60s deploy/skupper-router
