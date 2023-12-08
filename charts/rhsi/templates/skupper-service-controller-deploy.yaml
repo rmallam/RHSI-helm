@@ -67,8 +67,6 @@ spec:
         image: {{ .Values.serviceController.image.repository }}:{{ .Values.serviceController.image.version }}
         command: ["/bin/sh", "-c", "source /etc/sharedvol/env && /app/service-controller"]
         imagePullPolicy: Always
-        securityContext:
-          runAsNonRoot: true
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -168,7 +166,9 @@ spec:
               memory: "{{ .Values.flowCollector.memory.requests }}"
         securityContext:
           runAsNonRoot: true
+{{- if not (eq (.Values.common.cluster) "openshift") }}
           runAsUser: 2000
+{{- end }}
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
