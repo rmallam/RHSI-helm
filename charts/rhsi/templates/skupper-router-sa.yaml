@@ -1,6 +1,5 @@
-{{ if not .Values.common.siteconfigonly }}
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: skupper-router
-{{- end }}

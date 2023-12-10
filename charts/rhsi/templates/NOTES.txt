@@ -3,19 +3,7 @@
 ***               RED HAT Service Interconnect                 ***
 *******************************************************************
 
-{{- if .Values.common.siteconfigonly }}
 
-you have deployed only skupper-site configmap.
-
-Run the following to see the resource
-
- oc get cm skupper-site -o yaml 
-
-you will now have to run the following to deploy the other components of RHSI.
-
-helm upgrade --install skupper ./ --set common.siteconfigonly=false 
-
-{{- end -}}
 
 {{- if not .Values.common.siteconfigonly }}
 
@@ -48,7 +36,7 @@ Skupper cli can be downloaded here chttps://skupper.io/releases/index.html
 
 {{- end -}}
 
-{{- if and .Values.linkTokenCreate .Values.selfSignedCerts -}}
+{{- if and .Values.linkTokenCreate .Values.selfSignedCerts }}
 
         ***** Link information *****
 

@@ -1,4 +1,4 @@
-{{ if not .Values.common.siteconfigonly }}
+
 kind: Service
 apiVersion: v1
 metadata:
@@ -19,4 +19,3 @@ spec:
     application: skupper-router
     skupper.io/component: router
   type: {{ include "router.svctype" .}}
-{{- end }}

@@ -1,4 +1,4 @@
-{{ if not .Values.common.siteconfigonly }}
+
 {{ if .Values.flowCollector.enabled }}
 apiVersion: v1
 data:
@@ -38,5 +38,5 @@ kind: ConfigMap
 metadata:
   name: prometheus-server-config
 {{- end }}
-{{- end }}
+
 
